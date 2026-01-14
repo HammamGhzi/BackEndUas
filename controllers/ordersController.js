@@ -36,6 +36,31 @@ export const getOrderByOrderId = (req, res) => {
         res.json(results[0]);
     });
 };
+export const saveOrders = (req, res) => {
+    const { order_date, cust_id,user_id,total,method_id } = req.body;
+    console.log("Request Body:", req.body);
+
+
+    db.query(
+        "INSERT INTO orders (ORDER_DATE, CUST_ID, USER_ID, TOTAL, METHOD_ID) VALUES (?, ?, ?, ?, ?)",
+        [order_date, cust_id, user_id, total, method_id],
+        (err, results) => {
+            if (err) {
+                console.error("Database error:", err);
+                return res.status(500).json({ message: "Internal server error" });
+            }
+
+            res.json({
+                id: results.insertId,
+                order_date,
+                cust_id,
+                user_id,
+                total,
+                method_id
+            });
+        });
+};
+
 
 export const createOrder = (req, res) => {
     const { order_date, cust_id,user_id,total,method_id } = req.body;
@@ -102,7 +127,7 @@ export const updateOrder = (req, res) => {
 export const deleteOrder = (req, res) => {
     const { id } = req.params;
 
-    db.query("DELETE FROM products WHERE ORDER_ID = ?", [id], (err, results) => {
+    db.query("DELETE FROM orders WHERE ORDER_ID = ?", [id], (err, results) => {
         if (err) {
             console.error("Database error:", err);
             return res.status(500).json({ message: "Internal server error" });
@@ -113,3 +138,4 @@ export const deleteOrder = (req, res) => {
         res.json({ message: "Order Berhasil Dihapus" });
     });
 };
+

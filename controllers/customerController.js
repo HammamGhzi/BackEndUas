@@ -49,22 +49,34 @@ export const getCustomerById = (req, res) => {
         res.json(results[0]);
     });
 };
-
 export const updateCustomer = (req, res) => {
     const { id } = req.params;
-    const { nama, address, place_of_birth, date_of_birth, contact_number, email, gender_id } = req.body;
+    const { nama, address, place_of_birth, date_of_birth, contact_number, email, gender_id} = req.body;
 
-    db.query(
-        "UPDATE customers SET CUST_NAME = ?, ADDRESS = ?, PLACE_OF_BIRTH = ?, DATE_OF_BIRTH = ?, CONTACT_NUMBER = ?, EMAIL = ?, GENDER_ID = ? WHERE CUST_ID = ?",
-        [nama, address, place_of_birth, date_of_birth, contact_number, email, gender_id, id],
-        (err, results) => {
-            if (err) {
-                return res.status(500).json({ message: "Internal server error" });
-            }
+    if (!nama || !address || !place_of_birth || !date_of_birth ||  !contact_number || !email || !gender_id) {
+        return res.status(400).json({ message: " nama, address, place_of_birth, date_of_birth, contact_number, email, gender_id is required" });
+    }
 
-            res.json({message: "User updated successfully"});
+    db.query("UPDATE customers SET CUST_NAME = ?, ADDRESS = ?, PLACE_OF_BIRTH = ?, DATE_OF_BIRTH = ?, CONTACT_NUMBER = ?, EMAIL = ?, GENDER_ID = ? WHERE CUST_ID = ?", [nama, address, place_of_birth, date_of_birth, contact_number, email, gender_id,id], (err, results) => {
+        if (err) {
+            console.error("Database error:", err);
+            return res.status(500).json({ message: "Internal server error" });
         }
-    );
+        if (results.affectedRows === 0) {
+            return res.status(404).json({ message: "Customer not found" });
+        }
+        res.json({
+            id,
+            nama,
+            address,
+            place_of_birth,
+            date_of_birth,
+            contact_number,
+            email,
+            gender_id,
+            message: "Customer updated successfully"
+        });
+    });
 };
 
 export const deleteCustomer = (req, res) => {

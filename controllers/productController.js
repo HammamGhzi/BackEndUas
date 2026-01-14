@@ -16,6 +16,7 @@ export const getProducts = (req, res) => {
     });
 };
 
+
 export const getProductById = (req, res) => {
     const { id } = req.params;
     const query = `
@@ -37,16 +38,17 @@ export const getProductById = (req, res) => {
     });
 };
 
-export const createProduct = (req, res) => {
-    const { category_id, name, price } = req.body;
 
-    if (!category_id || !name || !price) {
-        return res.status(400).json({ message: "CATEGORY_ID, PRODUCT_NAME, and PRICE are require" });
+export const createProduct = (req, res) => {
+    const { category_id, name, price,created_at,created_by,stock, updated_at,updated_by } = req.body;
+
+    if (!category_id || !name || !price || !created_at || !created_by || !stock || !updated_at || !updated_by) {
+        return res.status(400).json({ message: "CATEGORY_ID, PRODUCT_NAME, PRICE , CREATED_AT , CREATED_BY ,STOCK, UPDATE_AT, UPDATE_BY  are require" });
     }
 
-    const query = "INSERT INTO products (CATEGORY_ID, PRODUCT_NAME, PRICE) VALUES (?, ?, ?)";
+    const query = "INSERT INTO products (CATEGORY_ID, PRODUCT_NAME, PRICE,CREATED_AT,CREATED_BY,STOCK,UPDATED_AT,UPDATED_BY) VALUES (?, ?, ?,?,?,?,?,?)";
 
-    db.query(query, [category_id, name, price], (err, results) => {
+    db.query(query, [category_id, name, price,created_at,created_by,stock, updated_at, updated_by], (err, results) => {
         if (err) {
             console.error("Database error:", err);
             if (err.code === 'ER_NO_REFERENCED_ROW_2') {
@@ -59,6 +61,11 @@ export const createProduct = (req, res) => {
             category_id,
             name,
             price,
+            created_at, 
+            created_by,
+            stock,
+            updated_at,
+            updated_by,
             message: "Product Berhasil Ditambahkan"
         });
     });
@@ -66,15 +73,15 @@ export const createProduct = (req, res) => {
 
 export const updateProduct = (req, res) => {
     const { id } = req.params;
-    const { category_id, name, price } = req.body;
+    const { category_id, name, price , stock, updated_at, updated_by } = req.body;
 
-    if (!category_id || !name || !price) {
-        return res.status(400).json({ message: "Category ID, Name, and Price are required" });
+    if (!category_id || !name || !price || !stock || !updated_at || !updated_by) {
+        return res.status(400).json({ message: "Category ID, Name, Price, Stock, Updated At and Updated By are required" });
     }
 
-    const query = "UPDATE products SET CATEGORY_ID = ?, PRODUCT_NAME = ?, PRICE = ? WHERE PRODUCT_ID = ?";
+    const query = "UPDATE products SET CATEGORY_ID = ?, PRODUCT_NAME = ?, PRICE = ?, STOCK = ?, UPDATED_AT = ?, UPDATED_BY = ? WHERE PRODUCT_ID = ?";
 
-    db.query(query, [category_id, name, price, id], (err, results) => {
+    db.query(query, [category_id, name, price, stock, updated_at, updated_by, id], (err, results) => {
         if (err) {
             console.error("Database error:", err);
             if (err.code === 'ER_NO_REFERENCED_ROW_2') {
@@ -90,6 +97,9 @@ export const updateProduct = (req, res) => {
             category_id,
             name,
             price,
+            stock,
+            updated_at,
+            updated_by,
             message: "Product Berhasil di Update"
         });
     });
