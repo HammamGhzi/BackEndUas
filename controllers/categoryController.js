@@ -106,17 +106,11 @@ export const deleteCategory = (req, res) => {
     });
 };
 
-export const getProductsByCategory = (req, res) => {
-    const { id } = req.params;      
-   db.query("SELECT * FROM products WHERE CATEGORY_ID = ?", [id], (err, results) => {
-        if (err) {
-            console.error("Database error:", err);
-            return res.status(500).json({ message: "Internal server error" });
-        }
-        if (results.length === 0) {
-            return res.status(404).json({ message: "Category not found" });
-        }
-        res.json(results[0]);
+export const getProductsByCategory = (req, res) => {   
+   db.query("SELECT * FROM products WHERE CATEGORY_ID = ?", [req.params.id], (err, results) => {
+        if (err) res.status(500).json(err);
+        
+        res.json(results);
     });
 };
 
