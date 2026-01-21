@@ -139,3 +139,22 @@ export const deleteOrder = (req, res) => {
     });
 };
 
+export const getOrderDetailsByOrder = (req, res) => {
+    const { id } = req.params;
+    const query = `
+        SELECT od.* , p.PRODUCT_NAME as product_name
+        FROM orders o
+        LEFT JOIN order_details od 
+        ON o.order_id = od.order_id
+        INNER JOIN products p ON od.PRODUCT_ID = p.PRODUCT_ID
+        WHERE o.order_id = ?
+    `;
+
+    db.query(query, [id], (err, results) => {
+        if (err) {
+            console.error("Database error:", err);
+            return res.status(500).json({ message: "Internal server error" });
+        }
+        res.json(results);
+    });
+};
