@@ -7,6 +7,7 @@ import ordersRoutes from "./routes/ordersRoutes.js";
 import orderDetailsRoutes from "./routes/orderDetailsRoutes.js";
 import kasirRoutes from "./routes/kasirRoutes.js";
 import genderRoutes from "./routes/genderRoutes.js";
+import dashboardRoutes   from "./routes/dashboardRoutes.js";
 import cors from "cors";
 
 dotenv.config();
@@ -23,6 +24,7 @@ app.use("/orders", ordersRoutes);
 app.use("/order_details", orderDetailsRoutes);
 app.use("/kasirs", kasirRoutes);
 app.use("/genders", genderRoutes);
+app.use("/dashboard", dashboardRoutes);
 
 
 app.listen(process.env.PORT, () => {
